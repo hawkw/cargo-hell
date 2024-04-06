@@ -1,0 +1,57 @@
+[package]
+name = "demo-stm32h7-nucleo"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies.task-jefe]
+git = "https://github.com/oxidecomputer/hubris"
+artifact = "bin"
+
+[build-dependencies]
+# cargo-hell = { path = ".." }
+
+[package.metadata.hubris]
+name = "demo-stm32h753-nucleo"
+target = "thumbv7em-none-eabihf"
+board = "nucleo-h753zi"
+chip = "../../chips/stm32h7"
+stacksize = 896
+
+[package.metadata.hubris.kernel]
+name = "demo-stm32h7-nucleo"
+requires = {flash = 24736, ram = 5120}
+features = ["h753", "dump"]
+
+[package.metadata.hubris.tasks.jefe]
+name = "task-jefe"
+priority = 0
+max-sizes = {flash = 16384, ram = 2048}
+start = true
+features = ["dump"]
+stacksize = 1536
+notifications = ["fault", "timer"]
+extern-regions = [ "sram2", "sram3", "sram4" ]
+
+[package.metadata.hubris.tasks.jefe.config.allowed-callers]
+set_reset_reason = ["sys"]
+request_reset = ["hiffy"]
+
+[package.metadata.hubris.tasks.sys]
+name = "drv-stm32xx-sys"
+features = ["h753", "exti", "no-panic"]
+priority = 1
+uses = ["rcc", "gpios", "system_flash", "syscfg", "exti"]
+start = true
+task-slots = ["jefe"]
+
+[package.metadata.hubris.tasks.user_leds]
+name = "drv-user-leds"
+features = ["stm32h7"]
+priority = 2
+max-sizes = {flash = 2048, ram = 1024}
+start = true
+task-slots = ["sys"]
+notifications = ["timer"]
+config = { blink_at_start = [ "Led::Zero" ] }

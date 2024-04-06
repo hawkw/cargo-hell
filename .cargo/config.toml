@@ -1,0 +1,5 @@
+[unstable]
+# Enables Cargo artifact dependencies.
+#
+# None of this nonsense will work without that feature.
+bindeps = true

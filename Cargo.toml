@@ -1,0 +1,18 @@
+[workspace]
+members = [
+    ".",
+    "demo-stm32h7-nucleo",
+]
+
+[package]
+name = "cargo-hell"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.81"
+cargo_metadata = "0.18.1"
+clap = { version = "4.5.4", features = ["derive", "env"] }
+toml = "0.8.12"
